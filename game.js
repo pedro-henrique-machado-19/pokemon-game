@@ -1,15 +1,54 @@
-const config = {
-  type: Phaser.AUTO,
-  width: 800,
-  height: 600,
-  scene: { create }
-};
+(() => {
+  const WIDTH = 800;
+  const HEIGHT = 600;
+  const rootElement = document.getElementById('game-root');
 
-const game = new Phaser.Game(config);
+  if (!rootElement) {
+    return;
+  }
 
-function create() {
-  this.add.text(200, 300, 'AGORA VAI!', {
-    fontSize: '40px',
-    fill: '#ffffff'
-  });
-}
+  if (typeof Phaser === 'undefined') {
+    rootElement.innerHTML = '<p class="error">Não foi possível carregar o Phaser.</p>';
+    return;
+  }
+
+  const config = {
+    type: Phaser.AUTO,
+    parent: 'game-root',
+    width: WIDTH,
+    height: HEIGHT,
+    backgroundColor: '#1f2937',
+    scale: {
+      mode: Phaser.Scale.FIT,
+      autoCenter: Phaser.Scale.CENTER_BOTH,
+    },
+    scene: {
+      preload,
+      create,
+      update,
+    },
+  };
+
+  new Phaser.Game(config);
+
+  function preload() {
+    // Reservado para assets do jogo.
+  }
+
+  function create() {
+    const title = this.add.text(WIDTH / 2, HEIGHT / 2, 'AGORA VAI!', {
+      fontFamily: 'Arial, sans-serif',
+      fontSize: '48px',
+      color: '#ffffff',
+      stroke: '#000000',
+      strokeThickness: 4,
+      align: 'center',
+    });
+
+    title.setOrigin(0.5);
+  }
+
+  function update() {
+    // Loop principal do jogo.
+  }
+})();
