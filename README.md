@@ -1,2 +1,0 @@
-# pokemon-game
-pokemon game
