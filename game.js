@@ -2,38 +2,63 @@ const config = {
   type: Phaser.AUTO,
   width: 800,
   height: 600,
-  scene: { preload, create, update }
+  scene: { preload, create }
 };
 
 const game = new Phaser.Game(config);
 
-let player;
-let cursors;
+let playerHP = 100;
+let enemyHP = 100;
 
 function preload() {
   this.load.image('player', 'https://i.imgur.com/6X12UGT.png');
-  this.load.image('grass', 'https://i.imgur.com/0Z8FQ9L.png');
+  this.load.image('enemy', 'https://i.imgur.com/8QfQ6Qp.png');
 }
 
 function create() {
-  // mapa
-  for(let x=0;x<25;x++){
-    for(let y=0;y<19;y++){
-      this.add.image(x*32,y*32,'grass').setOrigin(0);
+
+  // Player
+  this.add.image(200, 300, 'player');
+
+  // Enemy
+  this.add.image(600, 300, 'enemy');
+
+  // Texto HP
+  const playerText = this.add.text(100, 50, 'Player HP: 100', { fontSize: '20px', fill: '#fff' });
+  const enemyText = this.add.text(500, 50, 'Enemy HP: 100', { fontSize: '20px', fill: '#fff' });
+
+  // Botão atacar
+  const attackBtn = this.add.text(350, 500, 'ATACAR', {
+    fontSize: '30px',
+    backgroundColor: '#000',
+    padding: 10
+  })
+  .setInteractive()
+  .on('pointerdown', () => {
+
+    // Player ataca
+    let playerDamage = Phaser.Math.Between(10, 25);
+    enemyHP -= playerDamage;
+
+    // Enemy ataca
+    let enemyDamage = Phaser.Math.Between(5, 20);
+    playerHP -= enemyDamage;
+
+    // Atualiza texto
+    playerText.setText('Player HP: ' + playerHP);
+    enemyText.setText('Enemy HP: ' + enemyHP);
+
+    // Verifica fim
+    if (enemyHP <= 0) {
+      enemyText.setText('INIMIGO DERROTADO!');
+      attackBtn.disableInteractive();
     }
-  }
 
-  player = this.physics.add.sprite(100, 100, 'player');
-  cursors = this.input.keyboard.createCursorKeys();
-}
+    if (playerHP <= 0) {
+      playerText.setText('VOCÊ PERDEU!');
+      attackBtn.disableInteractive();
+    }
 
-function update() {
-  let speed = 150;
+  });
 
-  player.setVelocity(0);
-
-  if (cursors.left.isDown) player.setVelocityX(-speed);
-  if (cursors.right.isDown) player.setVelocityX(speed);
-  if (cursors.up.isDown) player.setVelocityY(-speed);
-  if (cursors.down.isDown) player.setVelocityY(speed);
 }
